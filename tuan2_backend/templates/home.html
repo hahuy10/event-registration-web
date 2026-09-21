@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang chủ (Tuần 2 - chưa có giao diện)</title>
+</head>
+<body>
+    <h1>TRANG CHỦ - DANH SÁCH SỰ KIỆN</h1>
+    <p><a href="/search">Đi tới trang Tìm kiếm / Lọc</a></p>
+
+    <h2>Sự kiện nổi bật</h2>
+    <ul>
+        {% for e in featured_events %}
+        <li>
+            <b>{{ e.name }}</b> — Loại: {{ e.category_name }} — Ngày: {{ e.event_date }} — Địa điểm: {{ e.location_name }}
+        </li>
+        {% else %}
+        <li>Chưa có sự kiện nổi bật.</li>
+        {% endfor %}
+    </ul>
+
+    <h2>Sự kiện sắp diễn ra</h2>
+    <ul>
+        {% for e in upcoming_events %}
+        <li>
+            {{ e.name }} | {{ e.category_name }} | {{ e.event_date }} | {{ e.location_name }}
+        </li>
+        {% else %}
+        <li>Chưa có sự kiện sắp diễn ra.</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

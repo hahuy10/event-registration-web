@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tìm kiếm / Lọc (Tuần 2 - chưa có giao diện)</title>
+</head>
+<body>
+    <h1>TÌM KIẾM &amp; LỌC SỰ KIỆN</h1>
+    <p><a href="/">Về Trang chủ</a></p>
+
+    <!-- Form thô, chưa Bootstrap -->
+    <form method="get">
+        Từ khóa: <input type="text" name="q" value="{{ filters.q }}"><br><br>
+
+        Loại sự kiện:
+        <select name="category_id">
+            <option value="">-- Tất cả --</option>
+            {% for c in categories %}
+            <option value="{{ c.id }}" {% if filters.category_id == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        Địa điểm:
+        <select name="location_id">
+            <option value="">-- Tất cả --</option>
+            {% for l in locations %}
+            <option value="{{ l.id }}" {% if filters.location_id == l.id|string %}selected{% endif %}>{{ l.name }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        Từ ngày: <input type="date" name="date_from" value="{{ filters.date_from }}">
+        Đến ngày: <input type="date" name="date_to" value="{{ filters.date_to }}"><br><br>
+
+        <button type="submit">Áp dụng bộ lọc</button>
+        <a href="/search">Xóa lọc</a>
+    </form>
+
+    <hr>
+    <p>Tìm thấy {{ total_results }} sự kiện phù hợp.</p>
+
+    <ul>
+        {% for e in results %}
+        <li>
+            <b>{{ e.name }}</b> — {{ e.category_name }} — {{ e.event_date }} — {{ e.location_name }}<br>
+            {{ e.description }}
+        </li>
+        {% else %}
+        <li>Không tìm thấy sự kiện phù hợp.</li>
+        {% endfor %}
+    </ul>
+
+    <!-- Phân trang thô -->
+    {% if total_pages > 1 %}
+    <p>Trang:
+        {% for p in range(1, total_pages + 1) %}
+            {% if p == page %}
+                <b>[{{ p }}]</b>
+            {% else %}
+                <a href="/search?q={{ filters.q }}&category_id={{ filters.category_id }}&location_id={{ filters.location_id }}&date_from={{ filters.date_from }}&date_to={{ filters.date_to }}&page={{ p }}">{{ p }}</a>
+            {% endif %}
+        {% endfor %}
+    </p>
+    {% endif %}
+</body>
+</html>
