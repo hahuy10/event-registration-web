@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>Đăng nhập</h2>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {{ form.identity.label }} {{ form.identity() }}
+    {% for e in form.identity.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    {{ form.password.label }} {{ form.password() }}
+    {% for e in form.password.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    <label style="font-weight:400">{{ form.remember() }} Ghi nhớ đăng nhập</label>
+    {{ form.submit() }}
+  </form>
+  <p class="muted" style="margin-top:1rem">Chưa có tài khoản?
+    <a href="{{ url_for('auth.register') }}">Đăng ký</a></p>
+</div>
+{% endblock %}

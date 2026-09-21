@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h1>Hệ thống quản lý tài khoản</h1>
+  <p class="muted">Demo đăng ký, đăng nhập/đăng xuất, phân quyền User/Admin và bảo mật phiên bằng Flask.</p>
+  {% if not current_user.is_authenticated %}
+    <a href="{{ url_for('auth.login') }}"><button>Đăng nhập</button></a>
+    <a href="{{ url_for('auth.register') }}"><button class="ghost">Đăng ký</button></a>
+  {% endif %}
+</div>
+{% endblock %}

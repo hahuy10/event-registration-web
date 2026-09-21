@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Trang cá nhân{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Xin chào, {{ user.username }}</h2>
+  <p>Vai trò: <span class="badge {{ user.role }}">{{ user.role|upper }}</span></p>
+  <table>
+    <tr><th>Email</th><td>{{ user.email }}</td></tr>
+    <tr><th>Ngày tạo</th><td>{{ user.created_at.strftime('%d/%m/%Y %H:%M') }}</td></tr>
+    <tr><th>Đăng nhập gần nhất</th>
+        <td>{{ user.last_login_at.strftime('%d/%m/%Y %H:%M') if user.last_login_at else '—' }}</td></tr>
+    <tr><th>IP gần nhất</th><td>{{ user.last_login_ip or '—' }}</td></tr>
+  </table>
+  {% if user.is_admin %}
+    <p style="margin-top:1.2rem"><a href="{{ url_for('admin.users') }}"><button>Vào khu vực quản trị</button></a></p>
+  {% endif %}
+</div>
+{% endblock %}

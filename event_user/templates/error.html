@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Lỗi {{ code }}{% endblock %}
+{% block content %}
+<div class="card narrow" style="text-align:center">
+  <h1 style="font-size:3rem;margin-bottom:0">{{ code }}</h1>
+  <p class="muted">{{ message }}</p>
+  <a href="{{ url_for('main.index') }}"><button>Về trang chủ</button></a>
+</div>
+{% endblock %}

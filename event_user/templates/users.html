@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Quản lý người dùng{% endblock %}
+{% block content %}
+<div class="card">
+  <h2>Quản lý người dùng</h2>
+  <p class="muted">Chỉ tài khoản Admin mới xem được trang này.</p>
+  <table>
+    <thead>
+      <tr><th>#</th><th>Tên đăng nhập</th><th>Email</th><th>Vai trò</th>
+          <th>Trạng thái</th><th>Hành động</th></tr>
+    </thead>
+    <tbody>
+    {% for u in pagination.items %}
+      <tr>
+        <td>{{ u.id }}</td>
+        <td>{{ u.username }}{% if u.id == current_user.id %} <span class="muted">(bạn)</span>{% endif %}</td>
+        <td>{{ u.email }}</td>
+        <td><span class="badge {{ u.role }}">{{ u.role|upper }}</span></td>
+        <td>{{ 'Hoạt động' if u.active else 'Bị khóa' }}</td>
+        <td>
+          {% if u.id != current_user.id %}
+          <form class="inline" method="post"
+                action="{{ url_for('admin.change_role', user_id=u.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <select name="role" onchange="this.form.submit()">
+              <option value="user"  {% if u.role=='user'  %}selected{% endif %}>User</option>
+              <option value="admin" {% if u.role=='admin' %}selected{% endif %}>Admin</option>
+            </select>
+          </form>
+          <form class="inline" method="post"
+                action="{{ url_for('admin.toggle_active', user_id=u.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="{{ 'danger' if u.active else 'ghost' }}" type="submit">
+              {{ 'Vô hiệu hóa' if u.active else 'Mở khóa' }}
+            </button>
+          </form>
+          {% else %}<span class="muted">—</span>{% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  {% if pagination.pages > 1 %}
+  <p style="margin-top:1rem">
+    {% for p in pagination.iter_pages() %}
+      {% if p %}<a href="{{ url_for('admin.users', page=p) }}"
+        {% if p == pagination.page %}style="font-weight:700"{% endif %}>{{ p }}</a>
+      {% else %}…{% endif %}
+    {% endfor %}
+  </p>
+  {% endif %}
+</div>
+{% endblock %}

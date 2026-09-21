@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Hệ thống tài khoản{% endblock %}</title>
+  <style>
+    :root { --bg:#f6f7f9; --card:#fff; --line:#e3e6ea; --ink:#1f2430; --muted:#6b7280; --brand:#2563eb; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, "Segoe UI", Roboto, sans-serif;
+           background:var(--bg); color:var(--ink); }
+    nav { background:var(--card); border-bottom:1px solid var(--line); padding:.8rem 1.5rem;
+          display:flex; align-items:center; gap:1.2rem; }
+    nav a { color:var(--ink); text-decoration:none; font-size:.95rem; }
+    nav a:hover { color:var(--brand); }
+    nav .spacer { margin-left:auto; }
+    .container { max-width:960px; margin:2rem auto; padding:0 1rem; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:1.6rem; }
+    .narrow { max-width:420px; margin:3rem auto; }
+    h1,h2 { margin-top:0; }
+    label { display:block; margin-top:1rem; font-size:.9rem; font-weight:600; }
+    input[type=text], input[type=password], input[type=email], select {
+      width:100%; padding:.6rem .7rem; margin-top:.35rem;
+      border:1px solid var(--line); border-radius:6px; font-size:1rem; }
+    input[type=submit], button {
+      margin-top:1.3rem; padding:.6rem 1.1rem; border:0; border-radius:6px;
+      background:var(--brand); color:#fff; font-size:.95rem; cursor:pointer; }
+    button.ghost { background:transparent; color:var(--brand); border:1px solid var(--line); margin:0; }
+    button.danger { background:#dc2626; margin:0; }
+    .err { color:#dc2626; font-size:.85rem; margin-top:.3rem; }
+    .flash { padding:.7rem 1rem; border-radius:6px; margin-bottom:.8rem; font-size:.92rem; }
+    .flash.success { background:#dcfce7; color:#166534; }
+    .flash.danger  { background:#fee2e2; color:#991b1b; }
+    .flash.warning { background:#fef3c7; color:#92400e; }
+    .flash.info    { background:#dbeafe; color:#1e40af; }
+    table { width:100%; border-collapse:collapse; margin-top:1rem; font-size:.9rem; }
+    th, td { text-align:left; padding:.6rem .5rem; border-bottom:1px solid var(--line); }
+    .badge { padding:.15rem .5rem; border-radius:99px; font-size:.75rem; font-weight:600; }
+    .badge.admin { background:#ede9fe; color:#5b21b6; }
+    .badge.user  { background:#e5e7eb; color:#374151; }
+    .muted { color:var(--muted); font-size:.88rem; }
+    form.inline { display:inline; }
+  </style>
+</head>
+<body>
+<nav>
+  <a href="{{ url_for('main.index') }}"><strong>MyApp</strong></a>
+  {% if current_user.is_authenticated %}
+    <a href="{{ url_for('main.dashboard') }}">Trang cá nhân</a>
+    {% if current_user.is_admin %}
+      <a href="{{ url_for('admin.users') }}">Quản trị</a>
+    {% endif %}
+    <span class="spacer"></span>
+    <span class="muted">{{ current_user.username }}</span>
+    <a href="{{ url_for('auth.change_password') }}">Đổi mật khẩu</a>
+    <form class="inline" method="post" action="{{ url_for('auth.logout') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="ghost" type="submit">Đăng xuất</button>
+    </form>
+  {% else %}
+    <span class="spacer"></span>
+    <a href="{{ url_for('auth.login') }}">Đăng nhập</a>
+    <a href="{{ url_for('auth.register') }}">Đăng ký</a>
+  {% endif %}
+</nav>
+
+<div class="container">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="flash {{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

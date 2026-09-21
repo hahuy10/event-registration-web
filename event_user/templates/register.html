@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Đăng ký{% endblock %}
+{% block content %}
+<div class="card narrow">
+  <h2>Tạo tài khoản</h2>
+  <form method="post" novalidate>
+    {{ form.hidden_tag() }}
+    {% for field in [form.username, form.email, form.password, form.confirm] %}
+      {{ field.label }}
+      {{ field() }}
+      {% for e in field.errors %}<div class="err">{{ e }}</div>{% endfor %}
+    {% endfor %}
+    {{ form.submit() }}
+  </form>
+  <p class="muted" style="margin-top:1rem">Đã có tài khoản?
+    <a href="{{ url_for('auth.login') }}">Đăng nhập</a></p>
+</div>
+{% endblock %}
