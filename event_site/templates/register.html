@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Đăng ký · {{ event.title }}{% endblock %}
+{% block content %}
+
+<a class="back" href="{{ url_for('event_detail', event_id=event.id) }}">Quay lại sự kiện</a>
+
+<div class="narrow">
+  <h1>Đăng ký tham gia</h1>
+  <p class="lead">{{ event.title }} — {{ event.start_at.strftime('%H:%M, %d/%m/%Y') }}</p>
+
+  <form method="post" class="form card">
+    <label>Họ và tên
+      <input name="full_name" value="{{ form.full_name or '' }}" required>
+    </label>
+    <div class="row">
+      <label>Email
+        <input type="email" name="email" value="{{ form.email or '' }}" required>
+        <small>Mã vé và hoá đơn sẽ gửi tới địa chỉ này.</small>
+      </label>
+      <label>Số điện thoại
+        <input name="phone" value="{{ form.phone or '' }}">
+      </label>
+    </div>
+    <div class="row">
+      <label>Số lượng vé
+        <input type="number" name="quantity" min="1"
+               {% if event.seats_left %}max="{{ event.seats_left }}"{% endif %}
+               value="{{ form.quantity or 1 }}">
+      </label>
+      <label>Giá vé
+        <input value="{{ 'Miễn phí' if event.is_free else event.price|money }}" disabled>
+      </label>
+    </div>
+    <label>Ghi chú cho ban tổ chức
+      <textarea name="note" rows="3" placeholder="Ăn chay, đi cùng trẻ nhỏ, cần hoá đơn công ty…">{{ form.note or '' }}</textarea>
+    </label>
+    <button class="btn btn-lg" type="submit">
+      {{ 'Xác nhận đăng ký' if event.is_free else 'Tiếp tục thanh toán' }}
+    </button>
+    {% if not event.is_free %}
+      <p class="note">Bước sau sẽ hiện mã QR để chuyển khoản. Giữ vé trong 30 phút.</p>
+    {% endif %}
+  </form>
+</div>
+
+{% endblock %}

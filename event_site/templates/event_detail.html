@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ event.title }}{% endblock %}
+{% block content %}
+
+<a class="back" href="{{ url_for('index') }}">Về danh sách sự kiện</a>
+
+{% if event.banner %}
+  <img class="detail-banner" src="{{ url_for('static', filename='uploads/' ~ event.banner) }}" alt="Banner {{ event.title }}">
+{% endif %}
+
+<div class="detail">
+  <div class="detail-main">
+    <h1>{{ event.title }}</h1>
+    {% if event.summary %}<p class="lead">{{ event.summary }}</p>{% endif %}
+    <div class="prose">{{ event.description|replace('\n', '<br>')|safe }}</div>
+  </div>
+
+  <aside class="detail-side">
+    <dl class="facts">
+      <dt>Thời gian</dt>
+      <dd>{{ event.start_at.strftime('%H:%M, %d/%m/%Y') }}
+        {% if event.end_at %}<br>đến {{ event.end_at.strftime('%H:%M, %d/%m/%Y') }}{% endif %}</dd>
+      <dt>Địa điểm</dt>
+      <dd>{{ event.location or 'Sẽ thông báo sau' }}</dd>
+      <dt>Vé</dt>
+      <dd class="big">{{ 'Miễn phí' if event.is_free else event.price|money }}</dd>
+      {% if event.seats_left is not none %}
+        <dt>Chỗ còn lại</dt>
+        <dd>{{ event.seats_left }} / {{ event.capacity }}</dd>
+      {% endif %}
+    </dl>
+    {% if event.is_past %}
+      <p class="note">Sự kiện này đã diễn ra.</p>
+    {% elif event.sold_out %}
+      <p class="note">Đã hết chỗ. Theo dõi trang này để biết khi có vé trả lại.</p>
+    {% else %}
+      <a class="btn btn-lg" href="{{ url_for('register', event_id=event.id) }}">Đăng ký tham gia</a>
+    {% endif %}
+  </aside>
+</div>
+
+{% endblock %}

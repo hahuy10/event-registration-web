@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Danh sách đăng ký{% endblock %}
+{% block content %}
+
+<div class="admin-head">
+  <h1>{{ 'Đăng ký · ' ~ event.title if event else 'Tất cả đăng ký' }}</h1>
+  <div class="admin-actions">
+    <a class="btn btn-ghost" href="{{ url_for('export_csv') }}">Tải CSV</a>
+    <a class="btn btn-ghost" href="{{ url_for('admin_events') }}">Quản lý sự kiện</a>
+  </div>
+</div>
+
+<div class="filters">
+  {% set base = url_for('admin_registrations', event_id=event.id) if event else url_for('admin_registrations') %}
+  <a href="{{ base }}" class="{{ 'on' if not status }}">Tất cả</a>
+  <a href="{{ base }}?status=pending" class="{{ 'on' if status == 'pending' }}">Chờ thanh toán</a>
+  <a href="{{ base }}?status=paid" class="{{ 'on' if status == 'paid' }}">Đã thanh toán</a>
+  <a href="{{ base }}?status=cancelled" class="{{ 'on' if status == 'cancelled' }}">Đã huỷ</a>
+</div>
+
+{% if regs %}
+<table class="table">
+  <thead>
+    <tr><th>Mã</th><th>Người đăng ký</th>{% if not event %}<th>Sự kiện</th>{% endif %}
+        <th>SL</th><th>Số tiền</th><th>Trạng thái</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for r in regs %}
+    <tr>
+      <td class="code">{{ r.code }}<br><small>{{ r.created_at.strftime('%d/%m %H:%M') }}</small></td>
+      <td>{{ r.full_name }}<br><small>{{ r.email }}{% if r.phone %} · {{ r.phone }}{% endif %}</small>
+          {% if r.note %}<br><small class="note-inline">{{ r.note }}</small>{% endif %}</td>
+      {% if not event %}<td><a href="{{ url_for('admin_registrations', event_id=r.event_id) }}">{{ r.event.title }}</a></td>{% endif %}
+      <td>{{ r.quantity }}</td>
+      <td>{{ r.amount|money }}</td>
+      <td><span class="status status-{{ r.status }}">{{ r.status_label }}</span>
+          {% if r.invoice_no %}<br><small>{{ r.invoice_no }}</small>{% endif %}</td>
+      <td class="row-actions">
+        {% if r.status == 'paid' %}
+          <a href="{{ url_for('invoice', code=r.code) }}">Hoá đơn</a>
+        {% else %}
+          <form method="post" action="{{ url_for('admin_mark_paid', code=r.code) }}">
+            <button class="link" type="submit">Xác nhận đã thu</button>
+          </form>
+        {% endif %}
+        {% if r.status != 'cancelled' %}
+          <form method="post" action="{{ url_for('admin_cancel', code=r.code) }}"
+                onsubmit="return confirm('Huỷ đăng ký {{ r.code }}?')">
+            <button class="link" type="submit">Huỷ</button>
+          </form>
+        {% endif %}
+        <form method="post" action="{{ url_for('admin_delete_reg', code=r.code) }}"
+              onsubmit="return confirm('Xoá hẳn đăng ký {{ r.code }}?')">
+          <button class="link-danger" type="submit">Xoá</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="empty">Chưa có đăng ký nào ở mục này.</p>
+{% endif %}
+
+{% endblock %}

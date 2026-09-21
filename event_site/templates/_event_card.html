@@ -1,0 +1,28 @@
+<article class="ticket">
+  <a class="ticket-banner" href="{{ url_for('event_detail', event_id=e.id) }}">
+    {% if e.banner %}
+      <img src="{{ url_for('static', filename='uploads/' ~ e.banner) }}" alt="Banner {{ e.title }}">
+    {% else %}
+      <span class="banner-fallback">{{ e.start_at.day }}/{{ e.start_at.month }}</span>
+    {% endif %}
+  </a>
+  <div class="ticket-body">
+    <p class="ticket-when">{{ e.start_at.strftime('%H:%M · %d/%m/%Y') }}</p>
+    <h3><a href="{{ url_for('event_detail', event_id=e.id) }}">{{ e.title }}</a></h3>
+    {% if e.summary %}<p class="ticket-sum">{{ e.summary }}</p>{% endif %}
+    <p class="ticket-place">{{ e.location }}</p>
+  </div>
+  <div class="ticket-stub">
+    <p class="price">{{ 'Miễn phí' if e.is_free else e.price|money }}</p>
+    {% if e.seats_left is not none %}
+      <p class="seats">{{ e.seats_left }} chỗ trống</p>
+    {% endif %}
+    {% if e.is_past %}
+      <span class="btn btn-ghost" aria-disabled="true">Đã kết thúc</span>
+    {% elif e.sold_out %}
+      <span class="btn btn-ghost" aria-disabled="true">Hết chỗ</span>
+    {% else %}
+      <a class="btn" href="{{ url_for('register', event_id=e.id) }}">Đăng ký</a>
+    {% endif %}
+  </div>
+</article>

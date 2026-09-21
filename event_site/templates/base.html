@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Sự Kiện Việt{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <div class="wrap topbar-in">
+    <a class="brand" href="{{ url_for('index') }}">
+      <span class="brand-mark"></span>Sự Kiện Việt
+    </a>
+    <nav class="nav">
+      <a href="{{ url_for('index') }}">Sự kiện</a>
+      <a href="{{ url_for('lookup') }}">Tra cứu vé</a>
+      {% if session.admin %}
+        <a href="{{ url_for('admin_events') }}">Quản lý</a>
+        <a class="quiet" href="{{ url_for('admin_logout') }}">Thoát</a>
+      {% else %}
+        <a class="quiet" href="{{ url_for('admin_login') }}">Ban tổ chức</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+
+<main class="wrap main">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flashes">
+        {% for cat, msg in messages %}<p class="flash flash-{{ cat }}">{{ msg }}</p>{% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="footer">
+  <div class="wrap footer-in">
+    <div>
+      <strong>{{ ORG.name }}</strong><br>
+      {{ ORG.address }}
+    </div>
+    <div>
+      Hotline {{ ORG.hotline }}<br>
+      {{ ORG.email }}
+    </div>
+  </div>
+</footer>
+</body>
+</html>

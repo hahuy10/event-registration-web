@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Đăng nhập ban tổ chức{% endblock %}
+{% block content %}
+
+<div class="narrow narrower">
+  <h1>Đăng nhập</h1>
+  <p class="lead">Khu vực dành cho ban tổ chức: tạo sự kiện, theo dõi đăng ký và xác nhận thanh toán.</p>
+  <form method="post" class="form card">
+    <label>Tài khoản<input name="username" required autofocus></label>
+    <label>Mật khẩu<input type="password" name="password" required></label>
+    <button class="btn btn-lg" type="submit">Đăng nhập</button>
+  </form>
+  <p class="note">Bản demo: admin / admin123. Đổi bằng biến môi trường ADMIN_USER và ADMIN_PASSWORD trước khi chạy thật.</p>
+</div>
+
+{% endblock %}

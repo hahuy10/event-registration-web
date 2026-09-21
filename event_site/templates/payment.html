@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Thanh toán {{ reg.code }}{% endblock %}
+{% block content %}
+
+<div class="narrow">
+  <h1>Quét mã để thanh toán</h1>
+  <p class="lead">{{ event.title }} · {{ reg.quantity }} vé</p>
+
+  <div class="pay card">
+    <div class="pay-qr">
+      <img src="{{ url_for('payment_qr', code=reg.code) }}" alt="Mã QR thanh toán {{ reg.code }}">
+      <p>Mở app ngân hàng, chọn quét QR.<br>Số tiền và nội dung đã điền sẵn.</p>
+    </div>
+    <dl class="pay-info">
+      <dt>Số tiền</dt><dd class="amount">{{ reg.amount|money }}</dd>
+      <dt>Ngân hàng</dt><dd>{{ PAYEE.bank_name }}</dd>
+      <dt>Số tài khoản</dt><dd>{{ PAYEE.account_no }}</dd>
+      <dt>Chủ tài khoản</dt><dd>{{ PAYEE.account_name }}</dd>
+      <dt>Nội dung chuyển khoản</dt><dd class="code">{{ reg.transfer_content }}</dd>
+      <dt>Mã đăng ký</dt><dd class="code">{{ reg.code }}</dd>
+    </dl>
+  </div>
+
+  <p class="note">Giữ nguyên nội dung chuyển khoản để hệ thống đối soát tự động. Nếu chuyển sai nội dung, gọi {{ ORG.hotline }}.</p>
+
+  <form method="post" action="{{ url_for('confirm_payment', code=reg.code) }}">
+    <button class="btn btn-lg" type="submit">Tôi đã chuyển khoản</button>
+  </form>
+  <p class="note">Bản demo xác nhận ngay khi bấm nút. Khi nối cổng thanh toán thật, nút này chỉ để kiểm tra trạng thái, còn việc ghi nhận do webhook ngân hàng thực hiện.</p>
+</div>
+
+{% endblock %}

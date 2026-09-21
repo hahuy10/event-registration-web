@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Quản lý sự kiện{% endblock %}
+{% block content %}
+
+<div class="admin-head">
+  <h1>Sự kiện</h1>
+  <div class="admin-actions">
+    <a class="btn btn-ghost" href="{{ url_for('admin_registrations') }}">Danh sách đăng ký</a>
+    <a class="btn" href="{{ url_for('event_form') }}">Thêm sự kiện</a>
+  </div>
+</div>
+
+<div class="stats">
+  <div><span>{{ events|length }}</span>sự kiện</div>
+  <div><span>{{ revenue|money }}</span>đã thu</div>
+  <div><span>{{ pending }}</span>đăng ký chờ thanh toán</div>
+</div>
+
+{% if events %}
+<table class="table">
+  <thead>
+    <tr><th>Sự kiện</th><th>Thời gian</th><th>Vé</th><th>Đã bán</th><th>Trạng thái</th><th></th></tr>
+  </thead>
+  <tbody>
+    {% for e in events %}
+    <tr>
+      <td>
+        <a href="{{ url_for('event_detail', event_id=e.id) }}"><strong>{{ e.title }}</strong></a><br>
+        <small>{{ e.location }}</small>
+      </td>
+      <td>{{ e.start_at.strftime('%H:%M %d/%m/%Y') }}</td>
+      <td>{{ 'Miễn phí' if e.is_free else e.price|money }}</td>
+      <td><a href="{{ url_for('admin_registrations', event_id=e.id) }}">{{ e.sold }}{% if e.capacity %} / {{ e.capacity }}{% endif %}</a></td>
+      <td>{% if not e.published %}Bản nháp{% elif e.is_past %}Đã diễn ra{% else %}Đang mở{% endif %}</td>
+      <td class="row-actions">
+        <a href="{{ url_for('event_form', event_id=e.id) }}">Sửa</a>
+        <form method="post" action="{{ url_for('event_delete', event_id=e.id) }}"
+              onsubmit="return confirm('Xoá “{{ e.title }}” và toàn bộ {{ e.registrations|length }} đăng ký của sự kiện này?')">
+          <button class="link-danger" type="submit">Xoá</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p class="empty">Chưa có sự kiện nào. <a href="{{ url_for('event_form') }}">Thêm sự kiện đầu tiên</a>.</p>
+{% endif %}
+
+{% endblock %}

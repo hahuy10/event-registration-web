@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero">
+  <h1>Chỗ của bạn ở sự kiện nào cuối tuần này?</h1>
+  <p class="hero-sub">Chọn sự kiện, điền thông tin, quét mã QR để thanh toán. Vé và hoá đơn hiện ra ngay sau đó.</p>
+  <form class="search" method="get" action="{{ url_for('index') }}">
+    <input type="search" name="q" value="{{ q }}" placeholder="Tìm theo tên sự kiện hoặc địa điểm">
+    <button type="submit">Tìm</button>
+  </form>
+</section>
+
+{% if q %}
+  <p class="result-line">{{ (upcoming|length) + (past|length) }} kết quả cho “{{ q }}”.
+    <a href="{{ url_for('index') }}">Xem tất cả</a></p>
+{% endif %}
+
+<h2 class="section-title">Sắp diễn ra</h2>
+{% if upcoming %}
+  <div class="ticket-list">
+    {% for e in upcoming %}{% include "_event_card.html" %}{% endfor %}
+  </div>
+{% else %}
+  <p class="empty">Chưa có sự kiện nào mở đăng ký. Ban tổ chức có thể thêm sự kiện trong trang quản lý.</p>
+{% endif %}
+
+{% if past %}
+  <h2 class="section-title">Đã diễn ra</h2>
+  <div class="ticket-list past">
+    {% for e in past %}{% include "_event_card.html" %}{% endfor %}
+  </div>
+{% endif %}
+
+{% endblock %}

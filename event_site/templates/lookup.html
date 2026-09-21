@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Tra cứu vé{% endblock %}
+{% block content %}
+
+<div class="narrow">
+  <h1>Tra cứu vé</h1>
+  <p class="lead">Nhập mã đăng ký dạng DK123ABC trong email xác nhận.</p>
+
+  <form method="post" class="form card">
+    <label>Mã đăng ký
+      <input name="code" placeholder="DK123ABC" required autofocus>
+    </label>
+    <button class="btn" type="submit">Tra cứu</button>
+  </form>
+
+  {% if reg %}
+    <div class="card lookup-result">
+      <p class="ticket-when">{{ reg.event.start_at.strftime('%H:%M · %d/%m/%Y') }}</p>
+      <h2>{{ reg.event.title }}</h2>
+      <p>{{ reg.full_name }} · {{ reg.quantity }} vé · {{ reg.amount|money }}</p>
+      <p class="status status-{{ reg.status }}">{{ reg.status_label }}</p>
+      {% if reg.status == 'paid' %}
+        <a class="btn" href="{{ url_for('invoice', code=reg.code) }}">Xem hoá đơn và vé</a>
+      {% elif reg.status == 'pending' %}
+        <a class="btn" href="{{ url_for('payment', code=reg.code) }}">Thanh toán ngay</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}

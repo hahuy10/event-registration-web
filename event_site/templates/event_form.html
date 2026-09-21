@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Sửa sự kiện' if event and event.id else 'Thêm sự kiện' }}{% endblock %}
+{% block content %}
+
+{% macro val(field, fallback='') -%}
+{{ form.get(field) if form.get(field) is not none else fallback }}
+{%- endmacro %}
+
+<a class="back" href="{{ url_for('admin_events') }}">Về danh sách quản lý</a>
+
+<div class="narrow">
+  <h1>{{ 'Sửa sự kiện' if event and event.id else 'Thêm sự kiện' }}</h1>
+
+  <form method="post" enctype="multipart/form-data" class="form card">
+    <label>Tên sự kiện
+      <input name="title" required value="{{ val('title', event.title if event else '') }}">
+    </label>
+
+    <label>Mô tả ngắn
+      <input name="summary" maxlength="300" placeholder="Một câu giới thiệu hiện ở trang danh sách"
+             value="{{ val('summary', event.summary if event else '') }}">
+    </label>
+
+    <label>Nội dung chi tiết
+      <textarea name="description" rows="7">{{ val('description', event.description if event else '') }}</textarea>
+    </label>
+
+    <label>Địa điểm
+      <input name="location" value="{{ val('location', event.location if event else '') }}">
+    </label>
+
+    <div class="row">
+      <label>Bắt đầu
+        <input type="datetime-local" name="start_at" required
+               value="{{ val('start_at', event.start_at.strftime('%Y-%m-%dT%H:%M') if event and event.start_at else '') }}">
+      </label>
+      <label>Kết thúc
+        <input type="datetime-local" name="end_at"
+               value="{{ val('end_at', event.end_at.strftime('%Y-%m-%dT%H:%M') if event and event.end_at else '') }}">
+      </label>
+    </div>
+
+    <div class="row">
+      <label>Số chỗ
+        <input type="number" name="capacity" min="0" value="{{ val('capacity', event.capacity if event else 100) }}">
+        <small>Để 0 nếu không giới hạn.</small>
+      </label>
+      <label>Giá vé (VND)
+        <input type="number" name="price" min="0" step="1000" value="{{ val('price', event.price if event else 0) }}">
+        <small>Để 0 nếu sự kiện miễn phí.</small>
+      </label>
+    </div>
+
+    <label>Banner sự kiện
+      <input type="file" name="banner" accept="image/png,image/jpeg,image/webp,image/gif">
+      <small>PNG, JPG, WEBP hoặc GIF, tối đa 8MB. Tỷ lệ đẹp nhất là 16:9.</small>
+    </label>
+
+    {% if event and event.banner %}
+      <div class="banner-preview">
+        <img src="{{ url_for('static', filename='uploads/' ~ event.banner) }}" alt="Banner hiện tại">
+        <label class="inline"><input type="checkbox" name="remove_banner" value="1"> Gỡ banner này</label>
+      </div>
+    {% endif %}
+
+    <label class="inline">
+      <input type="checkbox" name="published" value="1"
+             {{ 'checked' if (event.published if event else True) }}>
+      Mở đăng ký công khai
+    </label>
+
+    <button class="btn btn-lg" type="submit">Lưu sự kiện</button>
+  </form>
+</div>
+
+{% endblock %}
