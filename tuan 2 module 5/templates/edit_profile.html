@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Chỉnh sửa thông tin{% endblock %}
+
+{% block content %}
+<div class="card narrow" style="max-width:480px; margin:0 auto;">
+
+  <h2>✏️ Chỉnh sửa thông tin</h2>
+
+  <form method="POST" action="{{ url_for('module5.edit_profile') }}">
+    {# CSRF token bắt buộc vì Module 1 dùng Flask-WTF CSRFProtect #}
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+    <label>Tên đăng nhập</label>
+    <input
+      type="text"
+      name="username"
+      value="{{ user.username }}"
+      required
+      maxlength="50"
+    >
+
+    <label>Email</label>
+    <input
+      type="email"
+      name="email"
+      value="{{ user.email }}"
+      required
+      maxlength="120"
+    >
+
+    <div style="display:flex; gap:.8rem; margin-top:1.3rem;">
+      <input type="submit" value="💾 Lưu thay đổi">
+      <a href="{{ url_for('module5.profile') }}">
+        <button type="button" class="ghost">Huỷ</button>
+      </a>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

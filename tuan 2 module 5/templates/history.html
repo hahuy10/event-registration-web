@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Lịch sử đăng ký{% endblock %}
+
+{% block content %}
+<div class="card">
+
+  <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1rem;">
+    <h2 style="margin:0;">📋 Lịch sử đăng ký sự kiện</h2>
+    <a href="{{ url_for('module5.profile') }}">
+      <button type="button" class="ghost">← Quay lại Profile</button>
+    </a>
+  </div>
+
+  {% if registrations %}
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Tên sự kiện</th>
+        <th>Ngày sự kiện</th>
+        <th>Ngày đăng ký</th>
+        <th>Trạng thái</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reg in registrations %}
+      <tr>
+        <td>{{ loop.index }}</td>
+
+        {# reg.event là object Event nhờ relationship trong models.py #}
+        <td>{{ reg.event.name if reg.event else '—' }}</td>
+        <td>{{ reg.event.event_date if reg.event else '—' }}</td>
+        <td>{{ reg.registered_at.strftime('%d/%m/%Y %H:%M') }}</td>
+
+        {# Hiển thị badge màu theo trạng thái #}
+        <td>
+          {% if reg.status == 'registered' %}
+            <span class="badge user" style="background:#dcfce7; color:#166534;">Đã đăng ký</span>
+          {% else %}
+            <span class="badge" style="background:#fee2e2; color:#991b1b;">Đã huỷ</span>
+          {% endif %}
+        </td>
+
+        {# Nút huỷ chỉ hiện khi còn trạng thái "registered" #}
+        <td>
+          {% if reg.status == 'registered' %}
+          <form
+            method="POST"
+            action="{{ url_for('module5.cancel_registration', reg_id=reg.id) }}"
+            onsubmit="return confirm('Bạn có chắc muốn huỷ đăng ký sự kiện này?')"
+            class="inline"
+          >
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button type="submit" class="danger">Huỷ</button>
+          </form>
+          {% else %}
+            <span class="muted">—</span>
+          {% endif %}
+        </td>
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% else %}
+  {# Hiển thị khi chưa có lịch sử nào #}
+  <div style="text-align:center; padding:3rem 0; color:var(--muted);">
+    <p style="font-size:2rem; margin-bottom:.5rem;">📭</p>
+    <p>Bạn chưa đăng ký sự kiện nào.</p>
+    <a href="{{ url_for('module3.search') }}">
+      <button type="button">🔍 Khám phá sự kiện</button>
+    </a>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

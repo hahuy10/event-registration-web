@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Trang cá nhân{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:640px; margin:0 auto;">
+
+  <h2 style="margin-bottom:1.5rem;">👤 Thông tin cá nhân</h2>
+
+  <table>
+    <tr>
+      <th style="width:40%">Tên đăng nhập</th>
+      <td>{{ user.username }}</td>
+    </tr>
+    <tr>
+      <th>Email</th>
+      <td>{{ user.email }}</td>
+    </tr>
+    <tr>
+      <th>Vai trò</th>
+      <td><span class="badge {{ user.role }}">{{ user.role | upper }}</span></td>
+    </tr>
+    <tr>
+      <th>Ngày tham gia</th>
+      <td>{{ user.created_at.strftime('%d/%m/%Y') }}</td>
+    </tr>
+    <tr>
+      <th>Đăng nhập gần nhất</th>
+      <td>{{ user.last_login_at.strftime('%d/%m/%Y %H:%M') if user.last_login_at else '—' }}</td>
+    </tr>
+  </table>
+
+  <div style="margin-top:1.5rem; display:flex; gap:.8rem;">
+    <a href="{{ url_for('module5.edit_profile') }}">
+      <button type="button">✏️ Chỉnh sửa thông tin</button>
+    </a>
+    <a href="{{ url_for('module5.history') }}">
+      <button type="button" class="ghost">📋 Lịch sử đăng ký</button>
+    </a>
+  </div>
+
+</div>
+{% endblock %}
